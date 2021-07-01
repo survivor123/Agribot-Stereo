@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="body">
+
+   
+    
+    <link name='head'>
+    
+
+      <collision>
+        <origin xyz="-0.2 0 -0.105"
+                rpy="1.5708 0 1.5708" />
+        <geometry>
+          <box size="${head_X_Size} ${head_Y_Size} ${head_Z_Size}"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="-0.2 0 -0.105"
+        		rpy="1.5708 0 1.5708" />
+        <geometry>
+          <mesh filename="package://agribot_description/meshes/pointgrey_bumblebee2.dae"/>
+        </geometry>
+      </visual>
+    </link>
+    
+
+
+    <gazebo reference="head">
+      <mu1>0.01</mu1>
+      <mu2>0.01</mu2>
+      <kp>100000.0</kp>
+      <kd>1000000.0</kd>
+    </gazebo>
+    
+    <joint name="head_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="${head_X_Offset} ${head_Y_Offset} ${head_Z_Offset}" />
+      <parent link="base_link" />
+      <child link="head" />
+    </joint>
+    
+  </xacro:macro>
+
+</robot>

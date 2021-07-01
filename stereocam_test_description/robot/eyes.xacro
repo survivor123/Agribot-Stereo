@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="eye" params="lr tY">
+
+    
+    <link name="${lr}_eye">
+      <collision>
+        <origin xyz="-0.2 0 -0.11"
+        		rpy="0 0 0" />
+        <geometry>
+            <box size="${eye_length} ${eye_radius} ${eye_radius}"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="-0.2 0 -0.11"
+        		rpy="0 0 0" />
+        <geometry>
+          <box size="${eye_length} ${eye_radius} ${eye_radius}"/>
+        </geometry>
+        <material name="green"/>
+      </visual>
+
+    </link>
+
+    <gazebo reference="${lr}_eye">
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+      <kp>10000000.0</kp>
+      <kd>10000000.0</kd>
+      <minDepth>0.001</minDepth>
+      <maxVel>1.0</maxVel>
+      <material>Gazebo/Green</material>
+    </gazebo>
+
+
+    <joint name="${lr}_eye_hinge" type="fixed">
+      <parent link="head"/>
+      <child link="${lr}_eye"/>
+      <origin 
+        xyz = "${eye_X_Offset} ${-tY*(eye_Y_Offset)} ${eye_Z_Offset}"
+        rpy = "0 0 ${eye_yaw_Offset}" />
+    </joint>
+    
+    
+    <gazebo reference="${lr}_eye">
+      <sensor type="camera" name="camera_${lr}_eye">
+        <update_rate>10.0</update_rate>
+        <camera name="${lr}_eye_cam">
+            <pose>0 0 0 0 0 0.0</pose>
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>400</width>
+            <height>400</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.01</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+          <alwaysOn>true</alwaysOn>
+          <updateRate>0.0</updateRate>
+          <cameraName>stereo/${lr}</cameraName>
+          <imageTopicName>image_raw</imageTopicName>
+          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <frameName>${lr}_eye</frameName>
+          <hackBaseline>0.07</hackBaseline>
+          <distortionK1>0.0</distortionK1>
+          <distortionK2>0.0</distortionK2>
+          <distortionK3>0.0</distortionK3>
+          <distortionT1>0.0</distortionT1>
+          <distortionT2>0.0</distortionT2>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+</robot>
